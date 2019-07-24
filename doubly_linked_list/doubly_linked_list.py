@@ -44,25 +44,93 @@ class DoublyLinkedList:
     return self.length
 
   def add_to_head(self, value):
-    pass
+    if self.head is None:
+      self.head = ListNode(value)
+      self.tail = self.head
+      self.length += 1
+    else: 
+      self.head.insert_before(value)
+      self.head = self.head.prev
+      self.length += 1
 
   def remove_from_head(self):
-    pass
+    if self.head is None:
+      return None
+    else: 
+      temp = self.head.value
+      self.delete(self.head)
+      return temp
+    
 
   def add_to_tail(self, value):
-    pass
+    if self.head is None:
+      self.head = ListNode(value)
+      self.tail = self.head
+      self.length += 1
+    else: 
+      self.tail.insert_after(value)
+      self.tail = self.tail.next
+      self.length += 1
+
 
   def remove_from_tail(self):
-    pass
+    if self.head == self.tail:
+      temp = self.head.value
+      self.head = None
+      self.tail = None
+      self.length = 0
+      return temp
+    else:
+      temp = self.tail.value
+      self.tail.delete()
+      self.length -= 1
+      return temp
 
   def move_to_front(self, node):
-    pass
+    found = self.delete(node)
+    if found:
+      self.add_to_head(node.value)
 
   def move_to_end(self, node):
-    pass
+    found = self.delete(node)
+    if found is None:
+      self.add_to_tail(node.value)
+    elif found:
+      self.add_to_tail(node.value)
 
   def delete(self, node):
-    pass
+    if self.head == node and self.head.next is not None:
+      self.head = self.head.next
+      self.head.prev = None
+      self.length -= 1
+    elif self.head == node and self.head == self.tail:
+      self.head = None
+      self.tail = None
+      self.length -= 1
+    else:
+      headCopy = self.head
+      found = False
+      while(headCopy.next is not None):
+        if(headCopy.next == node):
+          headCopy = headCopy.next
+          headCopy.delete()
+          self.length -= 1
+          found = True
+          break
+        else:
+          headCopy = headCopy.next
+      print(found,"delete")
+      return found
+      
+
     
   def get_max(self):
-    pass
+    maxVal = self.head.value
+    headCopy = self.head
+    while(headCopy.next is not None):
+      if(headCopy.next.value > maxVal):
+        maxVal = headCopy.next.value
+        headCopy = headCopy.next
+      else:
+        headCopy = headCopy.next
+    return maxVal
