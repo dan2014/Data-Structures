@@ -34,7 +34,10 @@ class ListNode:
 
 """Our doubly-linked list class. It holds references to
 the list's head and tail nodes."""
+import functools
+
 class DoublyLinkedList:
+
   def __init__(self, node=None):
     self.head = node
     self.tail = node
@@ -43,26 +46,92 @@ class DoublyLinkedList:
   def __len__(self):
     return self.length
 
+  def empty_check(func):
+    def wrapper(self,value):
+      if self.head is None:
+        self.head = ListNode(value)
+        self.tail = self.head
+        self.length += 1
+      else:
+          func(self,value)
+    return wrapper
+
+  @empty_check
   def add_to_head(self, value):
-    pass
+    self.head.insert_before(value)
+    self.head = self.head.prev
+    self.length += 1
 
   def remove_from_head(self):
-    pass
-
+    if self.head is None:
+      return None
+    elif self.length == 1:
+      temp = self.head.value
+      self.head = None
+      self.tail = None
+      self.length = 0
+      return temp
+    else: 
+      temp = self.head.value
+      self.head = self.head.next
+      self.head.prev = None
+      self.length -= 1
+      return temp
+    
+  @empty_check
   def add_to_tail(self, value):
-    pass
+    self.tail.insert_after(value)
+    self.tail = self.tail.next
+    self.length += 1
+
 
   def remove_from_tail(self):
-    pass
+    if self.tail is None:
+      return None
+    elif self.length == 1:
+      temp = self.tail.value
+      self.head = None
+      self.tail = None
+      self.length = 0
+      return temp
+    else:
+      temp = self.tail.value
+      self.tail = self.tail.prev
+      self.tail.next = None
+      self.length -= 1
+      return temp
 
   def move_to_front(self, node):
-    pass
+    if node is self.head:
+      return node
+    self.delete(node)
+    self.add_to_head(node.value)
 
   def move_to_end(self, node):
-    pass
+    if node is self.tail:
+      return node
+    self.delete(node)
+    self.add_to_tail(node.value)
 
   def delete(self, node):
-    pass
+    if self.length == 0:
+      pass 
+    elif node == self.head:
+      self.remove_from_head()
+    elif node is self.tail:
+      self.remove_from_tail()
+    else:
+      node.delete()
+      self.length -=1 # this assumes that the node exists in the dll
     
   def get_max(self):
-    pass
+    maxVal = self.head.value
+    headCopy = self.head
+    while(headCopy.next is not None):
+      if(headCopy.next.value > maxVal):
+        maxVal = headCopy.next.value
+        headCopy = headCopy.next
+      else:
+        headCopy = headCopy.next
+    return maxVal
+
